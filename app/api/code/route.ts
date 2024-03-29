@@ -1,6 +1,8 @@
+"use client";
+
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import OpenAIApi from "openai";
+import OpenAIApi, { ClientOptions } from "openai";
 import Configuration from "openai";
 import {
   ChatCompletion,
@@ -9,9 +11,16 @@ import {
 
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 
-const configuration = new Configuration({
+const configuration: ClientOptions = {
   apiKey: process.env.OPENAI_API_KEY,
-});
+  organization: "your-organization",
+  baseURL: "https://api.openai.com/v1",
+  timeout: 60000, // 1 minute timeout
+  maxRetries: 2, // Retry up to 2 times
+  defaultHeaders: {}, // Default headers
+  defaultQuery: {}, // Default query parameters
+  dangerouslyAllowBrowser: false, // Be careful with this option
+};
 
 const openai = new OpenAIApi(configuration);
 
