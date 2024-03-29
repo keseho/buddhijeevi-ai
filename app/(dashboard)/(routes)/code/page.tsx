@@ -126,9 +126,9 @@ const CodePage = () => {
             <Empty label="No Baatcheet Started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message, index) => (
+            {messages.map((message) => (
               <div
-                key={index}
+                key={message.content}
                 className={cn(
                   "p-8 w-full flex items-start gap-x-8 rounded-lg",
                   message.role === "user"
@@ -137,7 +137,6 @@ const CodePage = () => {
                 )}
               >
                 {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-
                 <ReactMarkdown
                   components={{
                     pre: ({ node, ...props }) => (
@@ -151,7 +150,9 @@ const CodePage = () => {
                   }}
                   className="text-sm overflow-hidden leading-7"
                 >
-                  {message.content}
+                  {Array.isArray(message.content)
+                    ? message.content.map((part) => part.text).join("")
+                    : message.content || ""}
                 </ReactMarkdown>
               </div>
             ))}

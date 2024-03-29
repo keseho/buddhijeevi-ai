@@ -23,6 +23,7 @@ import UserAvatar from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import { useProModal } from "@/hooks/use-pro-modal";
 import toast from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
 
 const ConversationPage = () => {
   const router = useRouter();
@@ -125,9 +126,9 @@ const ConversationPage = () => {
             <Empty label="No Baatcheet Started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message, index) => (
+            {messages.map((message) => (
               <div
-                key={index}
+                key={message.content}
                 className={cn(
                   "p-8 w-full flex items-start gap-x-8 rounded-lg",
                   message.role === "user"
@@ -136,7 +137,25 @@ const ConversationPage = () => {
                 )}
               >
                 {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">{message.content}</p>
+                <ReactMarkdown
+                  components={{
+                    pre: ({ node, ...props }) => (
+                      <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                        <pre {...props} />
+                      </div>
+                    ),
+                    code: ({ node, ...props }) => (
+                      <code className="bg-black/10 rounded-lg p-1" {...props} />
+                    ),
+                  }}
+                  className="text-sm overflow-hidden leading-7"
+                >
+                  {message.content && typeof message.content === "string"
+                    ? message.content
+                    : message.content && Array.isArray(message.content)
+                    ? message.content.map((part) => part.text).join("")
+                    : null}
+                </ReactMarkdown>
               </div>
             ))}
           </div>
