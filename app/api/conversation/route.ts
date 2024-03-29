@@ -1,14 +1,22 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import OpenAIApi from "openai";
+import OpenAI from "openai";
+import { ClientOptions } from "openai";
 import Configuration from "openai";
+import OpenAIApi from "openai";
 
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
+const configuration: ClientOptions = {
+  apiKey: process.env.OPENAI_API_KEY || "", // Use your actual API key or provide a default value
+  organization: process.env.OPENAI_ORG_ID || null, // Use your actual organization ID or provide a default value
+  baseURL: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1",
+  timeout: 60000, // 1 minute timeout
+  maxRetries: 2, // Retry up to 2 times
+  defaultHeaders: {}, // Default headers
+  defaultQuery: {}, // Default query parameters
+  dangerouslyAllowBrowser: false, // Be careful with this option
+};
 const openai = new OpenAIApi(configuration);
 
 export async function POST(req: Request) {

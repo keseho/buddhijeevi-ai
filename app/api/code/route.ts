@@ -1,20 +1,19 @@
-"use client";
-
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import OpenAIApi, { ClientOptions } from "openai";
+import OpenAIApi from "openai";
 import Configuration from "openai";
 import {
   ChatCompletion,
   CreateChatCompletionRequestMessage,
 } from "openai/resources/index.mjs";
+import { OpenAI, ClientOptions } from "openai";
 
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 
 const configuration: ClientOptions = {
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: "your-organization",
-  baseURL: "https://api.openai.com/v1",
+  apiKey: process.env.OPENAI_API_KEY || "", // Use your actual API key or provide a default value
+  organization: process.env.OPENAI_ORG_ID || null, // Use your actual organization ID or provide a default value
+  baseURL: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1",
   timeout: 60000, // 1 minute timeout
   maxRetries: 2, // Retry up to 2 times
   defaultHeaders: {}, // Default headers
@@ -22,7 +21,7 @@ const configuration: ClientOptions = {
   dangerouslyAllowBrowser: false, // Be careful with this option
 };
 
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI(configuration);
 
 const instructionMessage: CreateChatCompletionRequestMessage = {
   role: "system",
