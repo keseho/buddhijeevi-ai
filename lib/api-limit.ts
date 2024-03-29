@@ -11,19 +11,19 @@ export const increaseApiLimit = async () => {
     return;
   }
 
-  const userApiLimit = await prismadb.UserApiLimit.findUnique({
+  const userApiLimit = await prismadb.userApiLimit.findUnique({
     where: {
       userId,
     },
   });
 
   if (userApiLimit) {
-    await prismadb.UserApiLimit.update({
+    await prismadb.userApiLimit.update({
       where: { userId: userId },
       data: { count: userApiLimit.count + 1 },
     });
   } else {
-    await prismadb.UserApiLimit.create({
+    await prismadb.userApiLimit.create({
       data: { userId: userId, count: 1 },
     });
   }
@@ -35,7 +35,7 @@ export const checkApiLimit = async () => {
   if (!userId) {
     return false;
   }
-  const userApiLimit = await prismadb.UserApiLimit.findUnique({
+  const userApiLimit = await prismadb.userApiLimit.findUnique({
     where: {
       userId: userId,
     },
@@ -81,7 +81,7 @@ export const getApiLimitCount = async () => {
   }
 
   // Find user's API limit entry for the current day
-  const userApiLimit = await prismadb.UserApiLimit.findFirst({
+  const userApiLimit = await prismadb.userApiLimit.findFirst({
     where: {
       userId,
       createdAt: {
@@ -93,7 +93,7 @@ export const getApiLimitCount = async () => {
 
   if (!userApiLimit) {
     // If no entry exists for the current day, create a new one
-    await prismadb.UserApiLimit.create({
+    await prismadb.userApiLimit.create({
       data: {
         userId,
         count: MAX_QUERIES_PER_DAY - 1, // Initial count for the day
