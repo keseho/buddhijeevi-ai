@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/router";
 
-export const tools = [
+const tools = [
   {
     label: "Conversation",
     icon: MessageSquare,
