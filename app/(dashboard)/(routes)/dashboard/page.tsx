@@ -1,5 +1,3 @@
-"use client";
-
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
@@ -10,8 +8,7 @@ import {
   Music,
   VideoIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import router from "next/router";
+import { useRouter } from "next/router";
 
 export const tools = [
   {
@@ -66,13 +63,16 @@ export default function DashboardPage() {
       <div className="px-4 md:px-20 lg:px-32 space-y-4">
         {tools.map((tool) => (
           <Card
-            onClick={() => router.push(tool.href)}
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(tool.href);
+            }}
             key={tool.href}
-            className="p-4 bprder-black/5 flex items-center justify-between hover:shadow-md transition cursor-pointer"
+            className="p-4 border-black/5 flex items-center justify-between hover:shadow-md transition cursor-pointer"
           >
             <div className="flex items-center gap-x-4">
               <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
-                <tool.icon className={cn("w-8  h-8", tool.color)} />
+                <tool.icon className={cn("w-8 h-8", tool.color)} />
               </div>
               <div className="font-semibold">{tool.label}</div>
             </div>
