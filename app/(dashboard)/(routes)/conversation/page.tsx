@@ -128,7 +128,7 @@ const ConversationPage = () => {
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (
               <div
-                key={message.content}
+                key={message.role}
                 className={cn(
                   "p-8 w-full flex items-start gap-x-8 rounded-lg",
                   message.role === "user"
@@ -153,7 +153,7 @@ const ConversationPage = () => {
                   {message.content && typeof message.content === "string"
                     ? message.content
                     : message.content && Array.isArray(message.content)
-                    ? message.content.map((part) => part.text).join("")
+                    ? message.content.map((part) => part.type).join("")
                     : null}
                 </ReactMarkdown>
               </div>

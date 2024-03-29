@@ -2,35 +2,33 @@
 
 import * as z from "zod";
 import axios from "axios";
-
-import { Code, MessageSquare } from "lucide-react";
+import { Code } from "lucide-react";
 import { useForm } from "react-hook-form";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CreateChatCompletionRequestMessage } from "openai/resources/chat/index.mjs";
+import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
+import { useRouter } from "next/navigation";
+import ChatCompletionRequestMessage from "openai";
+import { CreateChatCompletionRequestMessage } from "openai/resources/index.mjs";
 
-import Empty from "@/components/empty";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { formSchema } from "./constants";
-import Heading from "@/components/heading";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import Loader from "@/components/loader";
-import { cn } from "@/lib/utils";
-import UserAvatar from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
+import Heading from "@/components/heading";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import Loader from "@/components/loader";
+import UserAvatar from "@/components/user-avatar";
+import Empty from "@/components/empty";
 import { useProModal } from "@/hooks/use-pro-modal";
-import toast from "react-hot-toast";
+
+import { formSchema } from "./constants";
 
 const CodePage = () => {
   const router = useRouter();
   const proModal = useProModal();
-  const [messages, setMessages] = useState<
-    CreateChatCompletionRequestMessage[]
-  >([]);
+  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,7 +71,7 @@ const CodePage = () => {
     <div>
       <Heading
         title="Code Generation"
-        description="Generate code using descriptive text"
+        description="Generate code using descriptive text."
         icon={Code}
         iconColor="text-green-700"
         bgColor="bg-green-700/10"
@@ -84,16 +82,17 @@ const CodePage = () => {
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="
-            rounded-lg
-            border
-            w-full
-            p-4
-            md:px-6
-            focus-within:shadow-sm
-            grid
-            grid-cols-12
-            gap-2
-            "
+                rounded-lg 
+                border 
+                w-full 
+                p-4 
+                px-3 
+                md:px-6 
+                focus-within:shadow-sm
+                grid
+                grid-cols-12
+                gap-2
+              "
             >
               <FormField
                 name="prompt"
@@ -103,14 +102,19 @@ const CodePage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="Generate me toggle text button using react"
+                        placeholder="Simple toggle button using react hooks."
                         {...field}
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
-              <Button className="col-span-12 lg:col-span-2 w-full">
+              <Button
+                className="col-span-12 lg:col-span-2 w-full"
+                type="submit"
+                disabled={isLoading}
+                size="icon"
+              >
                 Generate
               </Button>
             </form>
@@ -123,12 +127,12 @@ const CodePage = () => {
             </div>
           )}
           {messages.length === 0 && !isLoading && (
-            <Empty label="No Baatcheet Started." />
+            <Empty label="No conversation started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (
               <div
-                key={message.content}
+                key={message.apiKey}
                 className={cn(
                   "p-8 w-full flex items-start gap-x-8 rounded-lg",
                   message.role === "user"
@@ -150,9 +154,7 @@ const CodePage = () => {
                   }}
                   className="text-sm overflow-hidden leading-7"
                 >
-                  {Array.isArray(message.content)
-                    ? message.content.map((part) => part.text).join("")
-                    : message.content || ""}
+                  {message.content}
                 </ReactMarkdown>
               </div>
             ))}
@@ -164,5 +166,3 @@ const CodePage = () => {
 };
 
 export default CodePage;
-
-//border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent
