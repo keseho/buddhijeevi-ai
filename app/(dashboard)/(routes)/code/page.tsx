@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
-import { ChatCompletionRequestMessage } from "openai";
+// import { ChatCompletionRequestMessage } from "openai/resources/index.mjs";
 import { CreateChatCompletionRequestMessage } from "openai/resources/index.mjs";
 
 import { BotAvatar } from "@/components/bot-avatar";
@@ -28,7 +28,9 @@ import { formSchema } from "./constants";
 const CodePage = () => {
   const router = useRouter();
   const proModal = useProModal();
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+  const [messages, setMessages] = useState<
+    CreateChatCompletionRequestMessage[]
+  >([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -130,12 +132,12 @@ const CodePage = () => {
             <Empty label="No conversation started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <div
-                key={message.apiKey}
+                key={index.toString()} // Use a unique identifier for the key
                 className={cn(
                   "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                  message.apiKey === "user"
+                  message.content === "user"
                     ? "bg-white border border-black/10"
                     : "bg-muted"
                 )}
@@ -154,7 +156,9 @@ const CodePage = () => {
                   }}
                   className="text-sm overflow-hidden leading-7"
                 >
-                  {message.content}
+                  {message.content && Array.isArray(message.content)
+                    ? message.content.map((part: any) => part.value).join("")
+                    : message.content}
                 </ReactMarkdown>
               </div>
             ))}
